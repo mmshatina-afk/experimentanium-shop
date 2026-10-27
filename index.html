@@ -13,14 +13,33 @@
      БЛОК ДАННЫХ
      Здесь лежат варианты, комментарии на изображениях, подсказки по терминам
      и пункты листа решений. Координаты меток x и y в процентах от картинки.
-     Типы комментариев: func (как это работает), diff (отличие от задания),
+     Типы комментариев: func (как это работает), diff (что на иллюстрации условно),
      q (вопрос на проектирование), tip (совет специалиста).
      ===================================================================== -->
 <script>
 window.DATA = {
+  /* Версия документа. Историю дополняйте только реальными изменениями. */
+  doc: {
+    version: "1.2",
+    date: "28.10.2026",
+    log: [
+      { v: "1.2", d: "28.10.2026", items: [
+        "Два способа просмотра: кратко и с пояснениями.",
+        "Сравнение двух вариантов одной зоны рядом.",
+        "Отметка и комментарий под каждой зоной, связанные с листом решений.",
+        "Выбор варианта для обсуждения отделён от просмотра.",
+        "Ключевые метки на картинках и список всех комментариев под изображением.",
+        "Сохранение и загрузка файла отметок, поля «Кто посмотрел» и «Дата обсуждения».",
+        "Продолжение с места остановки и ссылка на конкретный вариант."
+      ] },
+      { v: "1.1", d: "27.10.2026", items: ["Добавлена шестая зона: высокие настенные стеллажи для игрушек."] },
+      { v: "1.0", d: "27.10.2026", items: ["Первая публикация: пять зон, варианты оформления, комментарии и лист решений."] }
+    ]
+  },
+
   types: {
     func: { label: "Как это работает" },
-    diff: { label: "Отличие от задания" },
+    diff: { label: "Что на иллюстрации условно" },
     q:    { label: "Вопрос на проектирование" },
     tip:  { label: "Совет специалиста" }
   },
@@ -268,22 +287,20 @@ window.DATA = {
       { id: "a", l: "А", t: "Индустриальный графит" },
       { id: "b", l: "Б", t: "Графит и светлое дерево" },
       { id: "c", l: "В", t: "Музейный минимализм" },
-      { id: "mix", l: "А+В", t: "Сочетание направлений" }
+      { id: "mix", l: "Разные", t: "Свой вариант для каждой зоны" }
     ],
     items: [
-      { id: "island", name: "Центральный остров", sub: "Ячейки, закрытый низ" },
-      { id: "cash", name: "Касса", sub: "Рабочее место и витрина" },
-      { id: "glass", name: "Стеллажи у стекла", sub: "Витрина из коридора" },
-      { id: "wall", name: "Высокие настенные стеллажи", sub: "Вместимость, закрытый низ" },
-      { id: "books", name: "Книжный стеллаж", sub: "Наклонные полки, запас" },
-      { id: "merch", name: "Мерч музея", sub: "Одежда на плечиках" },
+      { id: "island", zone: true, name: "Центральный остров", sub: "Ячейки, закрытый низ" },
+      { id: "cash", zone: true, name: "Касса", sub: "Рабочее место и витрина" },
+      { id: "glass", zone: true, name: "Стеллажи у стекла", sub: "Витрина из коридора" },
+      { id: "wall", zone: true, name: "Высокие настенные стеллажи", sub: "Вместимость, закрытый низ" },
+      { id: "books", zone: true, name: "Книжный стеллаж", sub: "Наклонные полки, запас" },
+      { id: "merch", zone: true, name: "Мерч музея", sub: "Одежда на плечиках" },
       { id: "system", name: "Единая система деталей", sub: "Общие профили и фурнитура" },
       { id: "materials", name: "Материалы", sub: "Предварительные рекомендации" },
       { id: "light", name: "Свет", sub: "3500 К, профиль с рассеивателем" },
       { id: "wall-q-closed", group: "Высокие настенные стеллажи. Вопросы", name: "Закрытое нижнее хранение", sub: "Переходим на ящики и шкафы внизу?" },
       { id: "wall-q-top", group: "Высокие настенные стеллажи. Вопросы", name: "Верхние закрытые секции", sub: "Нужны ли они?" },
-      { id: "wall-q-variant", group: "Высокие настенные стеллажи. Вопросы", name: "Вариант оформления", sub: "Какой предпочтителен?",
-        options: [{ v: "a", t: "А" }, { v: "b", t: "Б" }, { v: "c", t: "В" }] },
       { id: "wall-q-density", group: "Высокие настенные стеллажи. Вопросы", name: "Плотность выкладки", sub: "Сохраняем предложенную?" },
       { id: "wall-q-light", group: "Высокие настенные стеллажи. Вопросы", name: "Освещение", sub: "Нужна более глубокая проработка?" }
     ]
@@ -295,28 +312,35 @@ window.DATA = {
 <header id="topbar">
   <button class="ctl" id="menuBtn" aria-label="Разделы">☰ Разделы</button>
   <div class="brand"><span class="sq"></span><span class="t">Экспериментаниум. Редизайн магазина</span></div>
-  <span class="stamp">Концепция. Не для производства</span>
+  <span class="stamp">Концепция</span>
   <span class="spacer"></span>
   <button class="ctl" id="viewBtn" aria-label="Настройки показа">Вид</button>
   <div class="controls">
-    <button class="sw" id="cToggle" role="switch" aria-checked="true">Комментарии <span class="track"></span></button>
-    <div class="dd">
-      <button class="ctl" aria-haspopup="true">Типы ▾</button>
+    <div class="seg mode-seg" role="group" aria-label="Способ просмотра">
+      <button data-mode="quick" aria-pressed="true">Кратко</button>
+      <button data-mode="detail" aria-pressed="false">С пояснениями</button>
+    </div>
+    <div class="dd" id="notesDd">
+      <button class="ctl" aria-haspopup="true" aria-expanded="false">Пояснения на картинках ▾</button>
       <div class="dd-panel">
+        <button class="sw" id="cToggle" role="switch" aria-checked="true">Показывать цифры <span class="track"></span></button>
+        <button class="sw" id="allToggle" role="switch" aria-checked="false">Показать все пояснения <span class="track"></span></button>
+        <button class="sw" id="diffToggle" role="switch" aria-checked="false">Только «что условно» <span class="track"></span></button>
+        <div class="dd-sub">Типы комментариев</div>
         <label><input type="checkbox" value="func" checked><span class="dot func"></span>Как это работает</label>
-        <label><input type="checkbox" value="diff" checked><span class="dot diff"></span>Отличие от задания</label>
+        <label><input type="checkbox" value="diff" checked><span class="dot diff"></span>Что на иллюстрации условно</label>
         <label><input type="checkbox" value="q" checked><span class="dot q"></span>Вопрос на проектирование</label>
         <label><input type="checkbox" value="tip" checked><span class="dot tip"></span>Совет специалиста</label>
+        <p class="dd-hint">Цифры на картинках можно нажимать. Здесь это приветствуется.</p>
       </div>
     </div>
-    <div class="seg" id="globalSeg" role="group" aria-label="Весь магазин в одном варианте">
-      <span class="lbl">Весь магазин</span>
-      <button data-g="a" aria-pressed="false" title="Индустриальный графит">А</button>
-      <button data-g="b" aria-pressed="false" title="Графит и светлое дерево">Б</button>
-      <button data-g="c" aria-pressed="false" title="Музейный минимализм">В</button>
+    <div class="seg" id="globalSeg" role="group" aria-label="Показать весь магазин в одном варианте">
+      <span class="lbl">Показать весь магазин</span>
+      <button data-g="a" aria-pressed="false" title="Только просмотр. Индустриальный графит">А</button>
+      <button data-g="b" aria-pressed="false" title="Только просмотр. Графит и светлое дерево">Б</button>
+      <button data-g="c" aria-pressed="false" title="Только просмотр. Музейный минимализм">В</button>
     </div>
-    <button class="sw" id="diffToggle" role="switch" aria-checked="false">Только отличия <span class="track"></span></button>
-    <button class="ctl" id="presentBtn" aria-pressed="false">Режим показа <span class="k">P</span></button>
+    <button class="ctl" id="presentBtn" aria-pressed="false">Показ <span class="k">P</span></button>
     <button class="ctl" id="printBtn">Печать</button>
   </div>
   <div id="progress"></div>
@@ -326,72 +350,82 @@ window.DATA = {
   <ol></ol>
   <div class="legend">
     <div><span class="dot func"></span>Как это работает</div>
-    <div><span class="dot diff"></span>Отличие от задания</div>
+    <div><span class="dot diff"></span>Что на иллюстрации условно</div>
     <div><span class="dot q"></span>Вопрос на проектирование</div>
     <div><span class="dot tip"></span>Совет специалиста</div>
-    <div style="margin-top:12px">Клавиши. C комментарии, D отличия, P режим показа</div>
+    <div style="margin-top:12px">Клавиши. C цифры на картинках, D только «что условно», P показ</div>
   </div>
 </nav>
 
 <main><div class="wrap">
 
 <!-- ====================== Обложка ====================== -->
-<section class="sec" id="cover" data-nav="Обложка">
+<section class="sec" id="cover" data-nav="Начало">
   <div class="hero">
-    <div>
+    <div class="hero-text">
       <div class="org">Музей занимательных наук «Экспериментаниум»</div>
       <h1>Редизайн магазина научных сувениров</h1>
-      <p class="sub">Предварительная концепция торгового оборудования для обсуждения с руководством музея.</p>
-      <div class="hint">
-        <b>Как смотреть эту страницу.</b> Цифры на картинках открывают комментарии. Их можно выключить кнопкой «Комментарии» или клавишей C. Кнопки А, Б, В в каждой зоне переключают варианты оформления. В конце страницы лист решений, где можно отметить, что согласовано.
+      <p class="sub">Шесть зон торгового оборудования, у каждой до трёх вариантов оформления. Здесь их можно посмотреть, сравнить и сразу отметить, что подходит.</p>
+      <div class="start">
+        <button class="start-btn" data-start="quick">
+          <span class="t">Посмотреть решения</span>
+          <span class="d">Шесть зон, крупные картинки, варианты и короткие пояснения. Мнение можно оставить прямо под зоной.</span>
+        </button>
+        <button class="start-btn ghost" data-start="detail">
+          <span class="t">Посмотреть с пояснениями</span>
+          <span class="d">Те же зоны с раскрытыми объяснениями, материалами, вопросами и всеми комментариями.</span>
+        </button>
       </div>
+      <p class="hero-note">Можно читать по порядку. Можно сразу перейти к картинкам. Мы понимаем.</p>
+      <details class="fold" id="aboutStage">
+        <summary><span class="fold-t">Что мы сейчас обсуждаем</span><span class="fold-s">Концепцию и внешний вид. Рабочих чертежей пока нет.</span></summary>
+        <div class="fold-body">
+          <div class="stages">
+            <div>
+              <h3>Этап 1. Концепция<span class="pill">сейчас</span></h3>
+              <ul class="pts">
+                <li>Изучаем, что неудобно покупателям и сотрудникам</li>
+                <li>Ищем более функциональные решения для каждой зоны</li>
+                <li>Сравниваем три варианта внешнего оформления</li>
+                <li>Продумываем материалы, хранение, выкладку и свет</li>
+                <li>Формируем единый визуальный язык оборудования</li>
+                <li>Отбираем решения, которые стоит разрабатывать дальше</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Этап 2. Проектирование</h3>
+              <ul class="pts grey">
+                <li>Точные обмеры помещения и существующей мебели</li>
+                <li>Проверка габаритов, проходов и эргономики</li>
+                <li>Размеры и вес реальных товаров</li>
+                <li>Рабочие чертежи и конструктивные расчёты</li>
+                <li>Материалы, фурнитура, электрика и освещение</li>
+                <li>Спецификация, стоимость изготовления и монтажа</li>
+                <li>Согласование с производством, при необходимости опытный модуль</li>
+              </ul>
+            </div>
+          </div>
+          <p class="muted fold-foot">Все изображения мебели созданы как иллюстрации концепции. Размеры и пропорции на них ориентировочные и не являются замерами.</p>
+        </div>
+      </details>
+      <details class="fold" id="whatsNew">
+        <summary><span class="fold-t">Что обновилось</span><span class="fold-s" id="docVer"></span></summary>
+        <div class="fold-body" id="docLog"></div>
+      </details>
     </div>
-    <div>
+    <div class="hero-media">
       <div class="mosaic"></div>
       <div class="mosaic-bar">
-        <span>Посмотреть весь магазин в одном варианте</span>
+        <span>Показать весь магазин в одном варианте</span>
         <div class="seg"><button data-g="a" aria-pressed="false">А</button><button data-g="b" aria-pressed="false">Б</button><button data-g="c" aria-pressed="false">В</button></div>
       </div>
+      <p class="mosaic-note">Это только просмотр. Вариант для обсуждения выбирается под каждой зоной.</p>
     </div>
   </div>
-</section>
-
-<!-- ====================== Статус ====================== -->
-<section class="sec" id="status" data-nav="Статус проекта">
-  <div class="sec-head">
-    <h2>Где мы сейчас</h2>
-    <p class="lead">Мы работаем над концепцией, визуальным стилем и функциональной организацией мебели. Производственный проект ещё не разрабатывается.</p>
-  </div>
-  <div class="stages">
-    <div>
-      <h3>Этап 1. Концепция<span class="pill">сейчас</span></h3>
-      <ul class="pts">
-        <li>Изучаем, что неудобно покупателям и сотрудникам</li>
-        <li>Ищем более функциональные решения для каждой зоны</li>
-        <li>Сравниваем три варианта внешнего оформления</li>
-        <li>Продумываем материалы, хранение, выкладку и свет</li>
-        <li>Формируем единый визуальный язык оборудования</li>
-        <li>Отбираем решения, которые стоит разрабатывать дальше</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Этап 2. Проектирование</h3>
-      <ul class="pts grey">
-        <li>Точные обмеры помещения и существующей мебели</li>
-        <li>Проверка габаритов, проходов и эргономики</li>
-        <li>Размеры и вес реальных товаров</li>
-        <li>Рабочие чертежи и конструктивные расчёты</li>
-        <li>Материалы, фурнитура, электрика и освещение</li>
-        <li>Спецификация, стоимость изготовления и монтажа</li>
-        <li>Согласование с производством, при необходимости опытный модуль</li>
-      </ul>
-    </div>
-  </div>
-  <div class="note" style="margin-top:22px">Все изображения мебели созданы как иллюстрации концепции. Размеры и пропорции на них ориентировочные и не являются замерами.</div>
 </section>
 
 <!-- ====================== Как сейчас ====================== -->
-<section class="sec" id="now" data-nav="Как магазин работает сейчас">
+<section class="sec detail-sec" id="now" data-nav="Как магазин работает сейчас">
   <div class="sec-head">
     <h2>Как магазин работает сейчас</h2>
     <p class="lead">Магазин работает и продаёт. Задача в том, чтобы оборудование стало единой продуманной системой, а не набором отдельных шкафов.</p>
@@ -410,7 +444,7 @@ window.DATA = {
 </section>
 
 <!-- ====================== Цели ====================== -->
-<section class="sec" id="goals" data-nav="Что хотим получить">
+<section class="sec detail-sec" id="goals" data-nav="Что хотим получить">
   <div class="sec-head">
     <h2>Что хотим получить</h2>
     <p class="lead">Речь не только о новом внешнем виде. Мы хотим удобную, вместительную и долговечную систему торгового оборудования.</p>
@@ -429,7 +463,7 @@ window.DATA = {
 <section class="sec" id="parts" data-nav="Шесть зон проекта">
   <div class="sec-head">
     <h2>Шесть зон проекта</h2>
-    <p class="lead">Каждая зона проектируется отдельно, но по общим правилам. Касса остаётся на месте. Двери, проходы и архитектура помещения не меняются.</p>
+    <p class="lead">Каждая зона проектируется отдельно, но по общим правилам. Касса остаётся на месте, двери, проходы и архитектура помещения не меняются. Можно выбрать разные варианты для разных зон. Верность букве А хранить необязательно.</p>
   </div>
   <div class="parts">
     <button class="part" data-jump="island"><div class="img"><img src="assets/img/island-c.jpg" alt="" loading="lazy"></div><h3>Центральный остров</h3><p>Главное место для небольших игрушек и головоломок.</p></button>
@@ -442,7 +476,7 @@ window.DATA = {
 </section>
 
 <!-- ====================== Остров ====================== -->
-<section class="sec has-diff" id="island" data-nav="Центральный остров">
+<section class="sec has-diff zone-sec" data-zone-sec="island" id="island" data-nav="Центральный остров">
   <div class="sec-head">
     <h2>Центральный остров</h2>
     <p class="lead">Остров остаётся большим и вместительным. Меняется организация выкладки и хранения.</p>
@@ -454,7 +488,7 @@ window.DATA = {
         <ul class="pts"><li>Подход со всех четырёх сторон</li><li>Нижний торговый уровень доступен детям</li><li>Верхние уровни с коробками видны взрослым</li><li>Каждый товар в своей прозрачной ячейке</li></ul></div>
       <div><h4>Для сотрудника</h4>
         <ul class="pts"><li>Перегородки переставляются под ассортимент</li><li>Пополняется одна ячейка, соседние не трогаются</li><li>Запас здесь же, в ящиках под выкладкой</li></ul></div>
-      <div class="note diff"><h4>Отличие от задания</h4>На всех вариантах на торцах внизу показаны открытые полки. По заданию нижняя часть закрыта со всех сторон, включая торцы.</div>
+      <div class="note diff"><h4>Что на иллюстрации условно</h4>На всех вариантах на торцах внизу показаны открытые полки. По заданию нижняя часть закрыта со всех сторон, включая торцы.</div>
     </div>
   </div>
   <div class="grid2 dim-in-diff" style="margin-top:44px;align-items:center">
@@ -507,13 +541,13 @@ window.DATA = {
     </div>
   </div>
   <div class="ba-block dim-in-diff">
-    <div class="ba-head"><h3>Было и стало</h3><span class="muted">Сдвиньте разделитель</span></div>
+    <div class="ba-head"><h3>Было и стало</h3><span class="muted">Фото сейчас слева, иллюстрация концепции справа. Сдвиньте разделитель.</span></div>
     <div data-ba="island"></div>
   </div>
 </section>
 
 <!-- ====================== Касса ====================== -->
-<section class="sec has-diff" id="cash" data-nav="Касса">
+<section class="sec has-diff zone-sec" data-zone-sec="cash" id="cash" data-nav="Касса">
   <div class="sec-head">
     <h2>Касса</h2>
     <p class="lead">Касса остаётся на прежнем месте, сохраняет габариты и изогнутую форму. Меняется внутренняя организация.</p>
@@ -526,17 +560,17 @@ window.DATA = {
       <div><h4>Для покупателя</h4>
         <ul class="pts"><li>Свободный центр для покупок и оплаты</li><li>Витрина в фасаде с подсветкой</li><li>Наклонные держатели для открыток</li><li>Ничего высокого между покупателем и кассиром</li></ul></div>
       <div class="box"><h4>Почему функция важнее количества лотков</h4><p>Пока идёт оплата, у покупателя есть несколько секунд, чтобы заметить мелочь. Это работает, если товар хорошо виден и лежит аккуратно. Лучше меньше позиций наверху и больше в подсвеченной витрине на уровне глаз ребёнка.</p></div>
-      <div class="note diff"><h4>Отличие от задания</h4>Органайзеры на столешнице местами выше, чем нужно. Вид со стороны кассира нарисован с почти прямой формой, реальная касса изогнутая.</div>
+      <div class="note diff"><h4>Что на иллюстрации условно</h4>Органайзеры на столешнице местами выше, чем нужно. Вид со стороны кассира нарисован с почти прямой формой, реальная касса изогнутая.</div>
     </div>
   </div>
   <div class="ba-block dim-in-diff">
-    <div class="ba-head"><h3>Было и стало</h3><span class="muted">Сдвиньте разделитель</span></div>
+    <div class="ba-head"><h3>Было и стало</h3><span class="muted">Фото сейчас слева, иллюстрация концепции справа. Сдвиньте разделитель.</span></div>
     <div data-ba="cash"></div>
   </div>
 </section>
 
 <!-- ====================== Стекло ====================== -->
-<section class="sec has-diff" id="glass" data-nav="Стеллажи вдоль стекла">
+<section class="sec has-diff zone-sec" data-zone-sec="glass" id="glass" data-nav="Стеллажи вдоль стекла">
   <div class="sec-head">
     <h2>Стеллажи вдоль стекла</h2>
     <p class="lead">Самая сложная часть проекта. Один и тот же стеллаж работает как торговое оборудование в магазине и как витрина для коридора, по которому посетители идут в музей.</p>
@@ -548,7 +582,7 @@ window.DATA = {
         <ul class="pts"><li>Существующая стеклянная стена сохраняется</li><li>Стойки стеллажа на осях стоек остекления</li><li>Ровный свет без бликов на стекле</li><li>Не видно проводов и коробок запаса</li></ul></div>
       <div><h4>Из магазина</h4>
         <ul class="pts"><li>Глубокие полки с регулируемой высотой</li><li>Усиленные полки для тяжёлых наборов</li><li>Ценник на кромке каждой полки</li><li>Закрытые ящики внизу для запаса</li></ul></div>
-      <div class="note diff"><h4>Отличие от задания</h4>На изображении ящики с ручками видны из коридора. В проекте из коридора будет глухая панель, ящики откроются из магазина. Вид из магазина для этого варианта пока не нарисован.</div>
+      <div class="note diff"><h4>Что на иллюстрации условно</h4>На изображении ящики с ручками видны из коридора. В проекте из коридора будет глухая панель, ящики откроются из магазина. Вид из магазина для этого варианта пока не нарисован.</div>
     </div>
   </div>
   <div class="grid2 dim-in-diff" style="margin-top:44px">
@@ -582,13 +616,13 @@ window.DATA = {
     </div>
   </div>
   <div class="ba-block dim-in-diff">
-    <div class="ba-head"><h3>Было и стало</h3><span class="muted">Сдвиньте разделитель</span></div>
+    <div class="ba-head"><h3>Было и стало</h3><span class="muted">Фото сейчас слева, иллюстрация концепции справа. Сдвиньте разделитель.</span></div>
     <div data-ba="glass"></div>
   </div>
 </section>
 
 <!-- ====================== Настенные стеллажи ====================== -->
-<section class="sec has-diff" id="wall" data-nav="Настенные стеллажи">
+<section class="sec has-diff zone-sec" data-zone-sec="wall" id="wall" data-nav="Настенные стеллажи">
   <div class="sec-head">
     <h2>Высокие настенные стеллажи для игрушек</h2>
     <p class="lead">Больше полезного пространства, прочные полки и удобное хранение запаса.</p>
@@ -601,7 +635,7 @@ window.DATA = {
         <ul class="pts"><li>Большой ассортимент научных игрушек хорошо виден</li><li>Товары распределены по категориям</li><li>Коробки разных размеров стоят на регулируемых полках</li><li>Основные позиции доступны детям и взрослым</li><li>Лицевые стороны упаковок обращены к покупателю</li><li>Ограничители на полках там, где это нужно</li><li>Ценники на передних кромках</li></ul></div>
       <div><h4>Для сотрудников</h4>
         <ul class="pts"><li>Запас хранится в нижних закрытых модулях, прямо под своей категорией</li><li>Выдвижные ящики и шкафы ускоряют пополнение</li><li>Полки переставляются при смене ассортимента</li><li>Подсветка доступна для обслуживания</li><li>Гладкие матовые поверхности проще очищать</li><li>Отдельные модули можно ремонтировать или заменить</li></ul></div>
-      <div class="note diff"><h4>Отличие от задания</h4>На визуализациях не показаны ценники и ограничители, а свет условный. В варианте Б не видна древесная отделка, в варианте В полки оранжевые вместо светло-серых. Надписи на коробках придуманы, это не реальный ассортимент.</div>
+      <div class="note diff"><h4>Что на иллюстрации условно</h4>На визуализациях не показаны ценники и ограничители, а свет условный. В варианте Б не видна древесная отделка, в варианте В полки оранжевые вместо светло-серых. Надписи на коробках придуманы, это не реальный ассортимент.</div>
     </div>
   </div>
   <div class="grid3 dim-in-diff" style="margin-top:40px">
@@ -611,13 +645,13 @@ window.DATA = {
   </div>
   <div class="note dim-in-diff" style="margin-top:22px">Для этой зоны всё предварительно. Визуальный стиль обсуждается, габариты ориентировочные, толщины материалов не утверждены, нагрузки требуют расчёта, стоимость не определена. Рабочие чертежи подготовим после выбора направления.</div>
   <div class="ba-block dim-in-diff">
-    <div class="ba-head"><h3>Было и стало</h3><span class="muted">Сдвиньте разделитель</span></div>
+    <div class="ba-head"><h3>Было и стало</h3><span class="muted">Фото сейчас слева, иллюстрация концепции справа. Сдвиньте разделитель.</span></div>
     <div data-ba="wall"></div>
   </div>
 </section>
 
 <!-- ====================== Книги ====================== -->
-<section class="sec has-diff" id="books" data-nav="Книжный стеллаж">
+<section class="sec has-diff zone-sec" data-zone-sec="books" id="books" data-nav="Книжный стеллаж">
   <div class="sec-head">
     <h2>Книжный стеллаж</h2>
     <p class="lead">Компактный, но высокий стеллаж из двух секций. Число секций не увеличиваем, работаем с высотой.</p>
@@ -633,7 +667,7 @@ window.DATA = {
 </section>
 
 <!-- ====================== Мерч ====================== -->
-<section class="sec has-diff" id="merch" data-nav="Мерч музея">
+<section class="sec has-diff zone-sec" data-zone-sec="merch" id="merch" data-nav="Мерч музея">
   <div class="sec-head">
     <h2>Мерч музея</h2>
     <p class="lead">Две секции. Одежда только на плечиках, без открытых стопок, которые покупатели разворачивают, а сотрудники складывают заново.</p>
@@ -651,13 +685,13 @@ window.DATA = {
         </tbody>
       </table></div>
       <div class="box"><h4>Почему это проще в работе</h4><p>Вещь на плечиках не нужно разворачивать, размер виден сразу. Запас по размерам лежит прямо под выкладкой.</p></div>
-      <div class="note diff"><h4>Отличие от задания</h4>На изображении вместо кружек показаны термосы и добавлен рюкзак. Это условное наполнение.</div>
+      <div class="note diff"><h4>Что на иллюстрации условно</h4>На изображении вместо кружек показаны термосы и добавлен рюкзак. Это условное наполнение.</div>
     </div>
   </div>
 </section>
 
 <!-- ====================== Единая система ====================== -->
-<section class="sec" id="system" data-nav="Единая система деталей">
+<section class="sec detail-sec" id="system" data-nav="Единая система деталей">
   <div class="sec-head">
     <h2>Одна система деталей для всей мебели</h2>
     <p class="lead">Если все шесть предметов собраны из одного набора материалов и фурнитуры, их проще изготовить, обслуживать и менять по частям.</p>
@@ -690,7 +724,7 @@ window.DATA = {
 </section>
 
 <!-- ====================== Материалы ====================== -->
-<section class="sec" id="materials" data-nav="Материалы">
+<section class="sec detail-sec" id="materials" data-nav="Материалы">
   <div class="sec-head">
     <h2>Из чего это можно изготовить</h2>
     <p class="lead">Мебель рассчитана на обычное мебельное производство. Это предварительные рекомендации. Толщины и нагрузки определит расчёт.</p>
@@ -724,7 +758,7 @@ window.DATA = {
 </section>
 
 <!-- ====================== Эксплуатация ====================== -->
-<section class="sec" id="care" data-nav="Пыль и прочность">
+<section class="sec detail-sec" id="care" data-nav="Пыль и прочность">
   <div class="sec-head">
     <h2>Пыль, прочность и ежедневная работа</h2>
     <p class="lead">Пыль будет всегда. Задача в том, чтобы она была менее заметна, а уборка занимала меньше времени.</p>
@@ -740,7 +774,7 @@ window.DATA = {
 </section>
 
 <!-- ====================== Свет ====================== -->
-<section class="sec has-diff" id="light" data-nav="Свет">
+<section class="sec has-diff detail-sec" id="light" data-nav="Свет">
   <div class="sec-head">
     <h2>Свет помогает рассмотреть товар</h2>
     <p class="lead">Покупатель должен видеть настоящий цвет коробки, читать надписи и цену. Подсветка без этой задачи даёт блики и ничего не продаёт.</p>
@@ -777,16 +811,16 @@ window.DATA = {
         <li>Блоки питания в доступных отсеках</li>
         <li>У стекла профиль за передней кромкой полки, чтобы не давать бликов</li>
       </ul>
-      <div class="note diff"><h4>Отличие от задания</h4>На визуализациях свет выглядит теплее и оранжевее, чем 3500 К. Это особенность изображений, а не предложение по оттенку.</div>
+      <div class="note diff"><h4>Что на иллюстрации условно</h4>На визуализациях свет выглядит теплее и оранжевее, чем 3500 К. Это особенность изображений, а не предложение по оттенку.</div>
     </div>
   </div>
 </section>
 
 <!-- ====================== Сравнение ====================== -->
-<section class="sec" id="compare" data-nav="Сравнение направлений">
+<section class="sec detail-sec" id="compare" data-nav="Сравнение направлений">
   <div class="sec-head">
     <h2>Сравнение трёх направлений</h2>
-    <p class="lead">Все оценки предварительные экспертные. Нажмите А, Б или В в шапке, и колонка подсветится, а все зоны покажут этот вариант.</p>
+    <p class="lead">Все оценки предварительные экспертные. Если в шапке нажать «Показать весь магазин» А, Б или В, колонка подсветится, а все зоны покажут этот вариант.</p>
   </div>
   <div class="tbl-wrap"><table class="tbl cmp">
     <thead><tr><th>Критерий</th>
@@ -811,7 +845,7 @@ window.DATA = {
 </section>
 
 <!-- ====================== Важные вопросы ====================== -->
-<section class="sec" id="issues" data-nav="Важные вопросы">
+<section class="sec detail-sec" id="issues" data-nav="Важные вопросы">
   <div class="sec-head">
     <h2>Что важно учесть при проектировании</h2>
     <p class="lead">Эти вопросы влияют на конструкцию и безопасность. Их нужно решить до чертежей.</p>
@@ -827,7 +861,7 @@ window.DATA = {
 </section>
 
 <!-- ====================== Следующий этап ====================== -->
-<section class="sec" id="next" data-nav="Следующий этап">
+<section class="sec detail-sec" id="next" data-nav="Следующий этап">
   <div class="sec-head">
     <h2>Что сделать перед производством</h2>
     <p class="lead">После выбора концепции начинается проектирование. Его результат это чертежи, спецификация и смета.</p>
@@ -848,28 +882,41 @@ window.DATA = {
 <section class="sec" id="decide" data-nav="Лист решений">
   <div class="sec-head">
     <h2>Лист решений</h2>
-    <p class="lead">Отметьте, что согласовано, что нужно обсудить и что не подходит. Отметки сохраняются в этом браузере. Итоги можно скопировать в письмо или протокол.</p>
+    <p class="lead">Здесь собираются отметки, оставленные под зонами. Их можно поправить и здесь, это одни и те же отметки. Собираем решения здесь, чтобы потом не искать их между „доброе утро“ и „кто забрал стремянку“.</p>
   </div>
-  <h3>Направление оформления</h3>
+  <div class="dec-meta">
+    <label>Кто посмотрел<input type="text" id="decWho" autocomplete="name" placeholder="Имя или должность"></label>
+    <label>Дата обсуждения<input type="date" id="decDate"></label>
+  </div>
+  <h3>Общее направление для обсуждения</h3>
   <div class="dec-dir"></div>
   <textarea class="dec-note" id="decDirNote" placeholder="Заметка к выбору направления" aria-label="Заметка к выбору направления"></textarea>
-  <h3 style="margin-top:36px">Решения по зонам и принципам</h3>
+  <h3 style="margin-top:36px">Зоны и принципы</h3>
   <div class="dec-list"></div>
+  <div class="dec-sum" id="decSum" aria-live="polite"></div>
+  <div class="save-line" id="saveLine">Сохранено на этом устройстве. Чтобы передать коллегам, скопируйте или скачайте итоги.</div>
   <div class="dec-actions">
     <button class="btn" id="decCopy">Скопировать итоги</button>
-    <button class="btn ghost" id="decSave">Скачать файл</button>
-    <button class="btn ghost" id="decReset">Очистить</button>
-    <span class="dec-summary"></span>
+    <button class="btn ghost" id="decSave">Скачать итоги</button>
+    <span class="act-sep"></span>
+    <button class="btn ghost" id="decExport">Сохранить файл отметок</button>
+    <button class="btn ghost" id="decImport">Загрузить отметки</button>
+    <input type="file" id="decFile" accept=".json,application/json" hidden>
+    <button class="btn link" id="decReset">Очистить</button>
   </div>
-  <div class="note" style="margin-top:28px">Сейчас мы не утверждаем размеры, материалы, бюджет и технологию производства. Эти параметры определим после выбора концепции.</div>
+  <p class="muted small-note">Итоги это текст для письма или протокола. Файл отметок нужен, чтобы позже загрузить их обратно, на этом или другом устройстве.</p>
+  <div class="imp-panel" id="impPanel" hidden></div>
+  <p class="end-note">На сегодня достаточно выбрать направление. Все миллиметры обсудим отдельно.</p>
 </section>
 
 <!-- ====================== Приложение ====================== -->
 <section class="sec has-diff" id="appendix" data-nav="Приложение">
   <div class="sec-head">
-    <h2>Приложение. Отличия изображений от задания</h2>
-    <p class="lead">Приоритет у согласованной функции. Изображение показывает только возможное визуальное решение.</p>
+    <h2>Приложение. Что на иллюстрациях условно</h2>
+    <p class="lead">Приоритет у согласованной функции. Иллюстрация показывает только возможное визуальное решение. Короткие пояснения стоят рядом с картинками, здесь полный перечень.</p>
   </div>
+  <details class="fold" id="appendixFold">
+    <summary><span class="fold-t">Полный перечень</span><span class="fold-s">12 пунктов по всем зонам</span></summary>
   <div class="tbl-wrap"><table class="tbl">
     <thead><tr><th>Зона</th><th>Что показано</th><th>Как будет в проекте</th></tr></thead>
     <tbody>
@@ -887,6 +934,7 @@ window.DATA = {
       <tr><td>Не визуализировано</td><td>Стекло из магазина, стекло в Б и В, мерч в В</td><td>Подготовим после выбора</td></tr>
     </tbody>
   </table></div>
+  </details>
 </section>
 
 </div></main>
@@ -900,9 +948,10 @@ window.DATA = {
     <button id="lbOut" aria-label="Уменьшить">−</button><span class="z">100%</span><button id="lbIn" aria-label="Увеличить">+</button>
     <button id="lbReset">Вписать</button><button id="lbClose">Закрыть</button></div>
 </div>
-<div id="diffBanner">Показаны только отличия от задания <button id="diffOff">Выключить</button></div>
-<div id="printMenu"><button data-print="notes">Печать с комментариями</button><button data-print="clean">Печать без комментариев</button></div>
-<div id="presentBar"><button id="pPrev" aria-label="Предыдущий раздел">‹</button><span class="cnt">1 / 1</span><button id="pNext" aria-label="Следующий раздел">›</button><button id="pC">Комментарии</button><button id="pExit">Выйти</button></div>
+<div id="diffBanner">Показано только «что на иллюстрации условно» <button id="diffOff">Выключить</button></div>
+<div id="printMenu"><p class="pm-note">Бумажная версия предусмотрена. С ней тоже можно ходить и обсуждать.</p><button data-print="notes">Печать с комментариями</button><button data-print="clean">Печать без комментариев</button><p class="pm-sub" id="pmMode"></p></div>
+<div id="presentBar"><button id="pPrev" aria-label="Предыдущий раздел">‹</button><span class="cnt">1 / 1</span><button id="pNext" aria-label="Следующий раздел">›</button><button id="pC">Цифры</button><button id="pAll">Все пояснения</button><button id="pExit">Выйти</button></div>
+<div id="resume" hidden></div>
 <div id="toast" role="status"></div>
 
 <script src="assets/site.js"></script>
