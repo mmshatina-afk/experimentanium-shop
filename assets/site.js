@@ -593,11 +593,17 @@
     note.addEventListener("input", () => { store.dec.directionNote = note.value; save(); renderSummary(); });
 
     const list = $(".dec-list");
-    list.innerHTML = D.decisions.items.map((it) =>
-      '<div class="dec-row" data-id="' + it.id + '"><div class="name">' + it.name + "<small>" + it.sub + "</small></div>" +
-      '<div class="st" role="group" aria-label="Решение по ' + it.name + '">' +
-      '<button data-v="ok" aria-pressed="false">Согласовано</button><button data-v="talk" aria-pressed="false">Обсудить</button><button data-v="no" aria-pressed="false">Не подходит</button></div>' +
-      '<textarea placeholder="Заметка" aria-label="Заметка: ' + it.name + '"></textarea></div>').join("");
+    let lastGroup = null;
+    list.innerHTML = D.decisions.items.map((it) => {
+      let head = "";
+      if (it.group && it.group !== lastGroup) head = '<h4 class="dec-group">' + it.group + "</h4>";
+      lastGroup = it.group || null;
+      const opts = it.options || DEFAULT_OPTS;
+      return head + '<div class="dec-row' + (it.options ? " opt" : "") + '" data-id="' + it.id + '"><div class="name">' + it.name + "<small>" + it.sub + "</small></div>" +
+        '<div class="st" role="group" aria-label="Решение по ' + it.name + '">' +
+        opts.map((o) => '<button data-v="' + o.v + '" aria-pressed="false">' + o.t + "</button>").join("") + "</div>" +
+        '<textarea placeholder="Заметка" aria-label="Заметка: ' + it.name + '"></textarea></div>';
+    }).join("");
     store.dec.items = store.dec.items || {};
     $$(".dec-row", list).forEach((row) => {
       const id = row.dataset.id;
@@ -631,6 +637,12 @@
     renderDec();
   }
   const ST = { ok: "Согласовано", talk: "Обсудить", no: "Не подходит" };
+  const DEFAULT_OPTS = [{ v: "ok", t: "Согласовано" }, { v: "talk", t: "Обсудить" }, { v: "no", t: "Не подходит" }];
+  function stLabel(it, v) {
+    if (!v) return "без отметки";
+    if (it.options) { const o = it.options.find((x) => x.v === v); return o ? "вариант " + o.t : v; }
+    return ST[v] || v;
+  }
   function renderDec() {
     $$(".dec-dir button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.dir === store.dec.direction)));
     $$(".dec-row").forEach((row) => {
@@ -642,9 +654,14 @@
   function renderSummary() {
     const items = store.dec.items || {};
     const c = { ok: 0, talk: 0, no: 0 };
-    Object.values(items).forEach((i) => { if (i.st) c[i.st]++; });
+    let marked = 0;
+    D.decisions.items.forEach((it) => {
+      const v = items[it.id];
+      if (!v || !v.st) return;
+      marked++;
+      if (!it.options && c[v.st] !== undefined) c[v.st]++;
+    });
     const total = D.decisions.items.length;
-    const marked = c.ok + c.talk + c.no;
     $(".dec-summary").textContent = "Отмечено " + marked + " из " + total + ". Согласовано " + c.ok + ", обсудить " + c.talk + ", не подходит " + c.no + ".";
   }
   function summaryText() {
@@ -655,10 +672,13 @@
     s += "Направление оформления. " + (dir ? dir.l + ", " + dir.t : "не выбрано") + "\n";
     if (store.dec.directionNote) s += "Заметка. " + store.dec.directionNote.trim() + "\n";
     s += "\n";
+    let lastGroup = null;
     D.decisions.items.forEach((it) => {
       const v = (store.dec.items || {})[it.id] || {};
-      s += it.name + ". " + (v.st ? ST[v.st] : "без отметки") + "\n";
-      if (v.note && v.note.trim()) s += "  Заметка. " + v.note.trim() + "\n";
+      if (it.group && it.group !== lastGroup) s += "\n" + it.group + "\n";
+      lastGroup = it.group || null;
+      s += (it.group ? "  " : "") + it.name + ". " + stLabel(it, v.st) + "\n";
+      if (v.note && v.note.trim()) s += (it.group ? "    " : "  ") + "Заметка. " + v.note.trim() + "\n";
     });
     s += "\nСтатус проекта. Концепция. Размеры, материалы и стоимость определяются на следующем этапе.\n";
     return s;
