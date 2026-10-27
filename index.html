@@ -30,7 +30,8 @@ window.DATA = {
         "Выбор варианта для обсуждения отделён от просмотра.",
         "Ключевые метки на картинках и список всех комментариев под изображением.",
         "Сохранение и загрузка файла отметок, поля «Кто посмотрел» и «Дата обсуждения».",
-        "Продолжение с места остановки и ссылка на конкретный вариант."
+        "Продолжение с места остановки и ссылка на конкретный вариант.",
+        "Реплики автора вынесены отдельными строками, чтобы их было видно."
       ] },
       { v: "1.1", d: "27.10.2026", items: ["Добавлена шестая зона: высокие настенные стеллажи для игрушек."] },
       { v: "1.0", d: "27.10.2026", items: ["Первая публикация: пять зон, варианты оформления, комментарии и лист решений."] }
@@ -331,7 +332,7 @@ window.DATA = {
         <label><input type="checkbox" value="diff" checked><span class="dot diff"></span>Что на иллюстрации условно</label>
         <label><input type="checkbox" value="q" checked><span class="dot q"></span>Вопрос на проектирование</label>
         <label><input type="checkbox" value="tip" checked><span class="dot tip"></span>Совет специалиста</label>
-        <p class="dd-hint">Цифры на картинках можно нажимать. Здесь это приветствуется.</p>
+        
       </div>
     </div>
     <div class="seg" id="globalSeg" role="group" aria-label="Показать весь магазин в одном варианте">
@@ -376,7 +377,7 @@ window.DATA = {
           <span class="d">Те же зоны с раскрытыми объяснениями, материалами, вопросами и всеми комментариями.</span>
         </button>
       </div>
-      <p class="hero-note">Можно читать по порядку. Можно сразу перейти к картинкам. Мы понимаем.</p>
+      <p class="aside">Можно читать по порядку. Можно сразу перейти к картинкам. Мы понимаем.</p>
       <details class="fold" id="aboutStage">
         <summary><span class="fold-t">Что мы сейчас обсуждаем</span><span class="fold-s">Концепцию и внешний вид. Рабочих чертежей пока нет.</span></summary>
         <div class="fold-body">
@@ -463,8 +464,9 @@ window.DATA = {
 <section class="sec" id="parts" data-nav="Шесть зон проекта">
   <div class="sec-head">
     <h2>Шесть зон проекта</h2>
-    <p class="lead">Каждая зона проектируется отдельно, но по общим правилам. Касса остаётся на месте, двери, проходы и архитектура помещения не меняются. Можно выбрать разные варианты для разных зон. Верность букве А хранить необязательно.</p>
+    <p class="lead">Каждая зона проектируется отдельно, но по общим правилам. Касса остаётся на месте, двери, проходы и архитектура помещения не меняются.</p>
   </div>
+  <p class="aside">А, Б и В можно выбирать для каждой зоны отдельно. Верность букве А хранить необязательно.</p>
   <div class="parts">
     <button class="part" data-jump="island"><div class="img"><img src="assets/img/island-c.jpg" alt="" loading="lazy"></div><h3>Центральный остров</h3><p>Главное место для небольших игрушек и головоломок.</p></button>
     <button class="part" data-jump="cash"><div class="img"><img src="assets/img/cash-staff.jpg" alt="" loading="lazy"></div><h3>Касса</h3><p>Удобное рабочее место и аккуратная витрина сувениров.</p></button>
@@ -882,8 +884,9 @@ window.DATA = {
 <section class="sec" id="decide" data-nav="Лист решений">
   <div class="sec-head">
     <h2>Лист решений</h2>
-    <p class="lead">Здесь собираются отметки, оставленные под зонами. Их можно поправить и здесь, это одни и те же отметки. Собираем решения здесь, чтобы потом не искать их между „доброе утро“ и „кто забрал стремянку“.</p>
+    <p class="lead">Здесь собираются отметки, оставленные под зонами. Их можно поправить и здесь, это одни и те же отметки.</p>
   </div>
+  <p class="aside">Собираем решения здесь, чтобы потом не искать их между «доброе утро» и «кто забрал стремянку».</p>
   <div class="dec-meta">
     <label>Кто посмотрел<input type="text" id="decWho" autocomplete="name" placeholder="Имя или должность"></label>
     <label>Дата обсуждения<input type="date" id="decDate"></label>
@@ -906,7 +909,7 @@ window.DATA = {
   </div>
   <p class="muted small-note">Итоги это текст для письма или протокола. Файл отметок нужен, чтобы позже загрузить их обратно, на этом или другом устройстве.</p>
   <div class="imp-panel" id="impPanel" hidden></div>
-  <p class="end-note">На сегодня достаточно выбрать направление. Все миллиметры обсудим отдельно.</p>
+  <p class="aside big">На сегодня достаточно выбрать направление. Все миллиметры обсудим отдельно.</p>
 </section>
 
 <!-- ====================== Приложение ====================== -->
@@ -949,7 +952,7 @@ window.DATA = {
     <button id="lbReset">Вписать</button><button id="lbClose">Закрыть</button></div>
 </div>
 <div id="diffBanner">Показано только «что на иллюстрации условно» <button id="diffOff">Выключить</button></div>
-<div id="printMenu"><p class="pm-note">Бумажная версия предусмотрена. С ней тоже можно ходить и обсуждать.</p><button data-print="notes">Печать с комментариями</button><button data-print="clean">Печать без комментариев</button><p class="pm-sub" id="pmMode"></p></div>
+<div id="printMenu"><p class="pm-note">Если удобнее с карандашом, печатайте. Место для убедительного кружочка найдётся.</p><button data-print="notes">Печать с комментариями</button><button data-print="clean">Печать без комментариев</button><p class="pm-sub" id="pmMode"></p></div>
 <div id="presentBar"><button id="pPrev" aria-label="Предыдущий раздел">‹</button><span class="cnt">1 / 1</span><button id="pNext" aria-label="Следующий раздел">›</button><button id="pC">Цифры</button><button id="pAll">Все пояснения</button><button id="pExit">Выйти</button></div>
 <div id="resume" hidden></div>
 <div id="toast" role="status"></div>

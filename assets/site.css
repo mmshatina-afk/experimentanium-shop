@@ -779,3 +779,17 @@ body:not(.all-marks) .hs.extra { display: none !important; }
   #toast { top: calc(var(--top) + 8px + env(safe-area-inset-top, 0px)); bottom: auto; transform: translate(-50%, -12px); font-size: 14px; padding: 10px 14px; }
   #toast.show { transform: translate(-50%, 0); }
 }
+
+/* ---------- Реплики автора ---------- */
+.aside {
+  position: relative; margin: 14px 0 22px; padding: 2px 0 2px 18px; max-width: 720px;
+  font-size: calc(18px * var(--fs)); line-height: 1.45; font-weight: 500; color: var(--graphite);
+  border-left: 3px solid var(--orange);
+}
+.aside.sm { font-size: calc(15.5px * var(--fs)); margin: 10px 0 14px; font-weight: 500; }
+.aside.big { font-size: calc(22px * var(--fs)); margin-top: 40px; }
+.fb .aside.sm { margin: 2px 0 0; }
+.zv > .aside.sm { margin: 0 0 10px; }
+.hero .aside { margin-top: 20px; }
+.sum-head + .aside { margin-top: -4px; }
+@media print { .aside { border-left-width: 2px; } }

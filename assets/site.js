@@ -294,6 +294,12 @@
       host._cmp = cmpEl;
       fillMedia($(".zv-stage .media", host), zoneImg(id, state.zone[id]), { missingText: z.missingText, ratio: zoneRatio(id) });
       host.insertBefore(makeListBlock(() => zoneImg(id, state.zone[id])), $(".zv-tools", host));
+      if (id === ZONES[0]) {
+        const a = document.createElement("p");
+        a.className = "aside sm";
+        a.textContent = "Цифры на картинке можно нажимать. Здесь это приветствуется.";
+        host.insertBefore(a, $(".zv-stage", host));
+      }
       host.addEventListener("click", (e) => {
         const vb = e.target.closest(".zv-bar .vbtn");
         const tb = e.target.closest(".zv-bar [data-view]");
@@ -384,7 +390,7 @@
     ZONES.forEach((id) => { state.zone[id] = v; updateZone(id); });
     updateGlobalUi();
     const miss = ZONES.filter((id) => !avail(id, v)).map((id) => D.zones[id].short);
-    toast("Весь магазин показан в варианте " + D.variants[v].l + ". Это только просмотр, отметки не меняются" + (miss.length ? ". Не нарисовано: " + miss.join(", ") : ""));
+    toast("Весь магазин в варианте " + D.variants[v].l + ". Посмотреть все варианты ещё не значит согласовать все варианты" + (miss.length ? ". Не нарисовано: " + miss.join(", ") : ""));
   }
   function updateGlobalUi() { $$("[data-g]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.g === state.global))); }
   function updateCompareHighlight() {
@@ -503,7 +509,8 @@
         ZONE_ST.map((s) => '<button data-v="' + s + '" aria-pressed="false">' + ST[s] + "</button>").join("") + "</div></div>" +
         '<p class="fb-no" hidden>В листе решений отмечено «Не подходит». Любая оценка здесь заменит эту отметку.</p>' +
         '<textarea class="fb-note" rows="2" placeholder="Что именно стоит учесть?" aria-label="Что именно стоит учесть: ' + esc(D.zones[id].short) + '"></textarea>' +
-        '<p class="fb-warn" hidden></p>';
+        '<p class="fb-warn" hidden></p>' +
+        (id === ZONES[0] ? '<p class="aside sm">«Мне не нравится» принимается. «Мне не нравится, потому что…» помогает двигаться дальше.</p>' : "");
       const anchor = $(".ba-block", sec);
       if (anchor) sec.insertBefore(fb, anchor); else sec.appendChild(fb);
       fb.addEventListener("click", (e) => {
@@ -580,7 +587,7 @@
       $("textarea", row).addEventListener("input", (e) => setNote(id, e.target.value, false));
     });
 
-    $("#decCopy").onclick = () => copyText(summaryText(), "Итоги скопированы. Их можно вставить в письмо или протокол");
+    $("#decCopy").onclick = () => copyText(summaryText(), "Итоги скопированы. Пригодятся, когда прозвучит «а на чём мы остановились?»");
     $("#decSave").onclick = () => download("Итоги обсуждения. Редизайн магазина. Версия " + D.doc.version + ".txt", summaryText(), "text/plain;charset=utf-8");
     $("#decExport").onclick = exportJson;
     $("#decImport").onclick = () => $("#decFile").click();
@@ -633,6 +640,7 @@
       (arr.length ? "<ul>" + arr.map(li).join("") + "</ul>" : '<p class="muted">Пока ничего</p>') + "</div>";
     el.innerHTML =
       '<div class="sum-head"><h3>Резюме перед отправкой</h3><p class="muted">Это предварительные отметки для обсуждения, а не согласование.</p></div>' +
+      '<p class="aside sm">Если всё подходит, это тоже стоит отметить. Молчание пока не считаем согласованием.</p>' +
       '<div class="sum-grid">' +
       '<div class="sb picks"><h4>Выбранные варианты</h4><ul><li>Общее направление: ' + (dir ? esc(dir.l + ", " + dir.t) : "не выбрано") + "</li>" +
       c.picks.map((r) => "<li>" + esc(r.name) + ": " + esc(vFull(r.pick)) + "</li>").join("") + "</ul></div>" +
@@ -641,7 +649,7 @@
       '<div class="sb none"><h4>Не отмечено <span>' + c.none.length + "</span></h4>" +
       (c.none.length ? "<p>" + c.none.map((r) => esc(r.name)).join(", ") + "</p>" : '<p class="muted">Всё отмечено</p>') +
       (c.unseen.length ? '<p class="unseen">Ещё не просмотрены на этом устройстве: ' + c.unseen.map((r) => esc(r.name)).join(", ") + "</p>" : "") +
-      '<p class="muted">Если всё подходит, это тоже стоит отметить. Молчание пока не считаем согласованием.</p></div>' +
+      "</div>" +
       "</div>";
   }
   function summaryText() {
