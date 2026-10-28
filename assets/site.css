@@ -809,3 +809,4 @@ body:not(.all-marks) .hs.extra { display: none !important; }
   #toTop span { display: none; }
 }
 @media print { #toTop { display: none !important; } }
+@media (max-width: 720px) { #toTop { right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }

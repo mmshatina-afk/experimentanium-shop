@@ -1227,10 +1227,15 @@
 
   function initToTop() {
     const b = $("#toTop");
-    const upd = () => { b.hidden = window.scrollY < innerHeight * 1.2 || document.body.classList.contains("present"); };
+    const y = () => window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const upd = () => { b.hidden = y() < Math.max(400, innerHeight * 0.7) || document.body.classList.contains("present"); };
     window.addEventListener("scroll", upd, { passive: true });
+    document.addEventListener("scroll", upd, { passive: true, capture: true });
+    window.addEventListener("resize", upd);
+    window.addEventListener("pageshow", upd);
     b.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: smooth() });
+      document.body.scrollTop = 0;
       $("#resume").hidden = true;
       setTimeout(() => { const h = $("#cover h1"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }, 400);
     });
