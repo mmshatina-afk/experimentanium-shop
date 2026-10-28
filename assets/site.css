@@ -793,3 +793,19 @@ body:not(.all-marks) .hs.extra { display: none !important; }
 .hero .aside { margin-top: 20px; }
 .sum-head + .aside { margin-top: -4px; }
 @media print { .aside { border-left-width: 2px; } }
+
+/* ---------- Кнопка «Наверх» ---------- */
+#toTop {
+  position: fixed; z-index: 48; right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  height: 46px; padding: 0 16px 0 13px; display: inline-flex; align-items: center; gap: 7px;
+  background: var(--graphite); color: var(--milk); border: 0; border-radius: 23px; cursor: pointer;
+  font: inherit; font-size: 14.5px; font-weight: 500; box-shadow: 0 8px 22px rgba(0,0,0,.22);
+}
+#toTop[hidden] { display: none; }
+#toTop:hover { background: var(--orange); }
+#cover h1:focus { outline: none; }
+@media (max-width: 720px) {
+  #toTop { width: 48px; height: 48px; padding: 0; justify-content: center; border-radius: 50%; }
+  #toTop span { display: none; }
+}
+@media print { #toTop { display: none !important; } }

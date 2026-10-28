@@ -1225,6 +1225,17 @@
     window.addEventListener("hashchange", () => applyHash(false));
   }
 
+  function initToTop() {
+    const b = $("#toTop");
+    const upd = () => { b.hidden = window.scrollY < innerHeight * 1.2 || document.body.classList.contains("present"); };
+    window.addEventListener("scroll", upd, { passive: true });
+    b.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: smooth() });
+      $("#resume").hidden = true;
+      setTimeout(() => { const h = $("#cover h1"); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }, 400);
+    });
+    upd();
+  }
   function initDocInfo() {
     $("#docVer").textContent = "Версия " + D.doc.version + " от " + D.doc.date;
     $("#docLog").innerHTML = D.doc.log.map((e) => '<div class="log-e"><b>Версия ' + esc(e.v) + ", " + esc(e.d) + "</b><ul>" + e.items.map((i) => "<li>" + esc(i) + "</li>").join("") + "</ul></div>").join("");
@@ -1245,6 +1256,7 @@
   initPrint();
   initControls();
   initDocInfo();
+  initToTop();
   applyFlags();
   updateGlobalUi();
   renderSaveLine();

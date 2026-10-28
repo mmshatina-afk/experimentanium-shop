@@ -31,7 +31,8 @@ window.DATA = {
         "Ключевые метки на картинках и список всех комментариев под изображением.",
         "Сохранение и загрузка файла отметок, поля «Кто посмотрел» и «Дата обсуждения».",
         "Продолжение с места остановки и ссылка на конкретный вариант.",
-        "Реплики автора вынесены отдельными строками, чтобы их было видно."
+        "Реплики автора вынесены отдельными строками, чтобы их было видно.",
+        "Кнопка «Наверх» в правом нижнем углу."
       ] },
       { v: "1.1", d: "27.10.2026", items: ["Добавлена шестая зона: высокие настенные стеллажи для игрушек."] },
       { v: "1.0", d: "27.10.2026", items: ["Первая публикация: пять зон, варианты оформления, комментарии и лист решений."] }
@@ -955,6 +956,7 @@ window.DATA = {
 <div id="printMenu"><p class="pm-note">Если удобнее с карандашом, печатайте. Место для убедительного кружочка найдётся.</p><button data-print="notes">Печать с комментариями</button><button data-print="clean">Печать без комментариев</button><p class="pm-sub" id="pmMode"></p></div>
 <div id="presentBar"><button id="pPrev" aria-label="Предыдущий раздел">‹</button><span class="cnt">1 / 1</span><button id="pNext" aria-label="Следующий раздел">›</button><button id="pC">Цифры</button><button id="pAll">Все пояснения</button><button id="pExit">Выйти</button></div>
 <div id="resume" hidden></div>
+<button id="toTop" type="button" aria-label="Наверх, к началу страницы" title="Наверх" hidden><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 15V3M3.5 8.5L9 3l5.5 5.5"/></svg><span>Наверх</span></button>
 <div id="toast" role="status"></div>
 
 <script src="assets/site.js"></script>
